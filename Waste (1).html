@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>B-Cal Waste Report</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f1115;
+      color: #e0e0e0;
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #00acc1;
+    }
+
+    form {
+      background: #1b1d23;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
+      max-width: 960px;
+      margin: auto;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
+      display: block;
+      color: #4dd0e1;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #37474f;
+      border-radius: 8px;
+      font-size: 16px;
+      background: #263238;
+      color: #b0bec5;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #ff7043;
+      box-shadow: 0 0 6px #ff7043;
+      background: #37474f;
+      color: white;
+    }
+
+    .section {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      background: #263238;
+      border: 1px solid #37474f;
+    }
+
+    .section h3 {
+      margin-top: 0;
+      color: #ffa726;
+      font-size: 1.2rem;
+    }
+
+    .reason-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .reason-row input {
+      flex-grow: 1;
+      background: #37474f;
+      color: #b0bec5;
+      border: 1px solid #455a64;
+      border-radius: 6px;
+      padding: 8px;
+    }
+
+    .reason-row span {
+      width: 30px;
+      color: #80deea;
+    }
+
+    .reason-row button {
+      background-color: #ff7043;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .reason-row button:hover {
+      background-color: #e64a19;
+    }
+
+    .add-btn {
+      background-color: #4dd0e1;
+      color: #121212;
+      padding: 6px 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .add-btn:hover {
+      background-color: #26c6da;
+    }
+
+    button.send {
+      width: 100%;
+      margin-top: 30px;
+      padding: 14px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff7043;
+      color: white;
+      cursor: pointer;
+    }
+
+    button.send:hover {
+      background-color: #e64a19;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #37474f;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .reason-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h2>B-Cal Waste Report</h2>
+<form id="wasteForm" onsubmit="return false;">
+  <label>Date:</label>
+  <input type="date" id="date">
+
+  <label>Shift:</label>
+  <select id="shift">
+    <option>D</option>
+    <option>M</option>
+    <option>N</option>
+  </select>
+
+  <label>Group:</label>
+  <select id="group">
+    <option>A</option>
+    <option selected>B</option>
+    <option>C</option>
+    <option>D</option>
+  </select>
+
+  <div class="section">
+    <h3>Overall Waste</h3>
+    <label>D (kg):</label><input type="number" id="dWaste" value="0" min="0" oninput="updateTotalWaste()">
+    <label>M (kg):</label><input type="number" id="mWaste" value="0" min="0" oninput="updateTotalWaste()">
+    <label>N (kg):</label><input type="number" id="nWaste" readonly>
+    <label>Total (kg):</label><input type="number" id="totalWaste" readonly>
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="includeOverall"> Include Overall Waste</label>
+    </div>
+  </div>
+
+  <label>Next Shift Supervisor:</label>
+  <select id="nextSupervisor">
+    <option>Abhishek G</option>
+    <option>Omkar S</option>
+    <option>Purva J</option>
+    <option>Sachine P</option>
+    <option>Satish M</option>
+    <option>Neha H</option>
+  </select>
+
+  <div class="section">
+    <h3>Manual & Force Info</h3>
+    <label>Manual Tag:</label><input type="number" id="manualTag" value="0" min="0">
+    <label>Manual Reason:</label><input type="text" id="manualReason" value="0">
+    <label>Force Verification:</label><input type="number" id="forceVerification" value="0" min="0">
+    <label>Force Reason:</label><input type="text" id="forceReason" value="0">
+  </div>
+
+  <div class="section">
+    <h3>Shift Waste Details</h3>
+    <label>Target (kg):</label><input type="number" id="target" value="89" readonly>
+    <label>Actual (kg):</label><input type="number" id="actual" readonly>
+    <label>Result (%):</label><input type="text" id="result" readonly>
+  </div>
+
+  <div class="section">
+    <h3>Textile Waste</h3>
+    <label>Machine (kg):</label><input type="number" id="textileMc" value="0" min="0" oninput="updateActual()">
+    <label>Return (kg):</label><input type="number" id="textileReturn" value="0" min="0" oninput="updateActual()">
+    <label>Reasons (Mc):</label><div id="textileMcReasons"></div><button type="button" class="add-btn" onclick="addReason('textileMcReasons')">+</button>
+    <label>Reasons (Return):</label><div id="textileReturnReasons"></div><button type="button" class="add-btn" onclick="addReason('textileReturnReasons')">+</button>
+  </div>
+
+  <div class="section">
+    <h3>Steel Waste</h3>
+    <label>Machine (kg):</label><input type="number" id="steelMc" value="0" min="0" oninput="updateActual()">
+    <label>Return (kg):</label><input type="number" id="steelReturn" value="0" min="0" oninput="updateActual()">
+    <label>Reasons (Mc):</label><div id="steelMcReasons"></div><button type="button" class="add-btn" onclick="addReason('steelMcReasons')">+</button>
+    <label>Reasons (Return):</label><div id="steelReturnReasons"></div><button type="button" class="add-btn" onclick="addReason('steelReturnReasons')">+</button>
+  </div>
+
+  <button type="button" class="send" onclick="sendWhatsApp()">Send to WhatsApp</button>
+</form>
+
+<script>
+  document.getElementById('date').valueAsDate = new Date();
+
+  function updateActual() {
+    const get = id => parseFloat(document.getElementById(id).value) || 0;
+    const actual = get('textileMc') + get('textileReturn') + get('steelMc') + get('steelReturn');
+    document.getElementById('actual').value = actual.toFixed(2);
+    document.getElementById('result').value = ((actual / 89) * 100).toFixed(2);
+    document.getElementById('nWaste').value = actual.toFixed(2);
+    updateTotalWaste();
+  }
+
+  function updateTotalWaste() {
+    const d = +document.getElementById('dWaste').value || 0;
+    const m = +document.getElementById('mWaste').value || 0;
+    const n = +document.getElementById('nWaste').value || 0;
+    document.getElementById('totalWaste').value = (d + m + n).toFixed(2);
+  }
+
+  function addReason(id) {
+    const div = document.createElement('div');
+    div.className = 'reason-row';
+    div.innerHTML = `<span>${document.getElementById(id).children.length + 1}.</span>
+      <input type="text" placeholder="Enter reason">
+      <button type="button" onclick="this.parentElement.remove(); updateNumbers('${id}')">x</button>`;
+    document.getElementById(id).appendChild(div);
+  }
+
+  function updateNumbers(id) {
+    const rows = document.getElementById(id).querySelectorAll('.reason-row');
+    rows.forEach((row, i) => row.querySelector('span').textContent = (i + 1) + '.');
+  }
+
+  function getReasonText(id) {
+    const rows = document.getElementById(id).querySelectorAll('.reason-row');
+    return Array.from(rows).map((row, i) => {
+      const val = row.querySelector('input').value.trim();
+      return val ? `${i + 1}. ${val}` : '';
+    }).filter(Boolean).join('\n') || 'None';
+  }
+
+  function validateForm() {
+    const requiredText = [
+      ['manualReason', 'Manual Reason'],
+      ['forceReason', 'Force Reason'],
+    ];
+    for (const [id, name] of requiredText) {
+      if (!document.getElementById(id).value.trim()) {
+        alert(`Please fill ${name}.`);
+        document.getElementById(id).focus();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function sendWhatsApp() {
+    if (!validateForm()) return;
+
+    const g = id => document.getElementById(id).value;
+    const includeOverall = document.getElementById('includeOverall').checked;
+
+    const rawDate = g('date'); // yyyy-mm-dd
+    const [year, month, day] = rawDate.split('-');
+    const formattedDate = `${day}/${month}/${year}`;
+
+    let msg = `B-cal waste details
+Date: ${formattedDate}
+Shift: ${g('shift')}
+Group: ${g('group')}`;
+
+    if (includeOverall) {
+      msg += `
+
+Overall Waste:
+D = ${g('dWaste')} kg
+M = ${g('mWaste')} kg
+N = ${g('nWaste')} kg
+Total = ${g('totalWaste')} kg`;
+    }
+
+    msg += `
+
+Manual tag: ${g('manualTag')}
+Reason: ${g('manualReason')}
+
+Force verification: ${g('forceVerification')}
+Reason: ${g('forceReason')}
+
+🔴 Shift waste Details
+Target: 89 kg
+Actual: ${g('actual')} kg
+Result: ${g('result')}%
+Total waste: ${g('actual')} kg
+
+1 - Textile: ${(parseFloat(g('textileMc')) + parseFloat(g('textileReturn'))).toFixed(2)} kg
+Mc: ${g('textileMc')} kg
+Return: ${g('textileReturn')} kg
+Reasons for waste (Mc):
+${getReasonText('textileMcReasons')}
+Reasons for waste (Return):
+${getReasonText('textileReturnReasons')}
+
+🔴 Steel: ${(parseFloat(g('steelMc')) + parseFloat(g('steelReturn'))).toFixed(2)} kg
+Mc: ${g('steelMc')} kg
+Return: ${g('steelReturn')} kg
+Reasons for waste (Mc):
+${getReasonText('steelMcReasons')}
+Reasons for waste (Return):
+${getReasonText('steelReturnReasons')}
+
+Next shift supervisor: ${g('nextSupervisor')}`;
+
+    window.open(`https://wa.me/917058975363?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  ['textileMcReasons','textileReturnReasons','steelMcReasons','steelReturnReasons'].forEach(addReason);
+  updateActual();
+</script>
+</body>
+</html>
